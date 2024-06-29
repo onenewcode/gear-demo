@@ -4,4 +4,4 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-gstd ="1.4.1"
+gstd = { tag = "v1.4.1", features = ["debug"] }
