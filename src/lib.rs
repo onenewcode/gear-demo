@@ -1,14 +1,21 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+#![no_std]
+use gstd::{msg, prelude::*};
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+static mut COUNTER: i32 = 0;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+#[no_mangle]
+extern "C" fn handle() {
+    let command = msg::load_bytes().expect("Invalid message");
+    let mut counter = unsafe { COUNTER };
+
+    match command.as_slice() {
+        b"inc" => counter += 1,
+        b"dec" => counter -= 1,
+        b"get" => {
+            msg::reply_bytes(format!("{counter}"), 0).expect("Unable to reply");
+        }
+        _ => (),
     }
+
+    unsafe { COUNTER = counter };
 }

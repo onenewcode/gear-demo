@@ -1,0 +1,5 @@
+# 使用特定版本的Rust语言特性或与项目依赖兼容的Rust版本
+[toolchain]
+channel = "stable"
+targets = ["wasm32-unknown-unknown"]
+profile = "default"
