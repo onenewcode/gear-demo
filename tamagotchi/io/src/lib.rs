@@ -6,9 +6,9 @@ use gstd::{prelude::*, ActorId};
 
 pub type AttributeId = u32;
 pub type TransactionId = u64;
-
+// 设置我们应用的数据格式
 pub struct ProgramMetadata;
-
+// 设置元数据格式
 impl Metadata for ProgramMetadata {
     type Init = In<TmgInit>;
     type Handle = InOut<TmgAction, TmgReply>;

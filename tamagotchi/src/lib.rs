@@ -5,8 +5,11 @@ use gstd::{exec, msg, prelude::*, ActorId};
 use tamagotchi_io::*;
 
 #[derive(Default, Encode, Decode, TypeInfo)]
+// 指定结构体编解码属性
 #[codec(crate = gstd::codec)]
+// 提供生成元数据功能
 #[scale_info(crate = gstd::scale_info)]
+// 设置我们宠物所包含的属性
 struct Tamagotchi {
     name: String,
     date_of_birth: u64,
@@ -22,6 +25,7 @@ struct Tamagotchi {
 static mut TAMAGOTCHI: Option<Tamagotchi> = None;
 
 impl Tamagotchi {
+    // 投喂功能
     fn feed(&mut self) {
         assert!(!self.tmg_is_dead(), "Tamagotchi has died");
         self.fed += FILL_PER_FEED - self.calculate_hunger();
