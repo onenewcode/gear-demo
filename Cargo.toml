@@ -20,5 +20,4 @@ tamagotchi-io.path = "tamagotchi/io"
 gstd = "1.4.1"
 gear-wasm-builder = "1.4.1"
 gmeta = "1.4.1"
-
-parity-scale-codec = "3.6.12"
+parity-scale-codec = { version = "3.6.12", default-features = false }
