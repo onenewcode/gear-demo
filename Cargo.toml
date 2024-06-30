@@ -1,11 +1,24 @@
-[package]
-name = "gear-demo"
+[workspace]
+resolver = "2"
+members = [
+    "tamagotchi",
+    "tamagotchi/state",
+]
+
+[workspace.package]
+authors = ["alphonse"]
 version = "0.1.0"
 edition = "2021"
+publish = false
 
-[dependencies]
-gstd = { tag = "v1.4.1", features = ["debug"] }
-codec = { package = "parity-scale-codec", version = "v3.6.12", default-features = false}
-gtest = { tag = "v1.4.1" }
-gclient = {tag = "v1.4.1" }
-tokio = { version = "1.38.0", features = ["full"] }
+[workspace.dependencies]
+tamagotchi.path = "tamagotchi"
+tamagotchi-io.path = "tamagotchi/io"
+
+
+# Gear
+gstd = "1.4.1"
+gear-wasm-builder = "1.4.1"
+gmeta = "1.4.1"
+
+parity-scale-codec = "3.6.12"
