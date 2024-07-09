@@ -68,7 +68,7 @@ impl Tamagotchi {
         };
         msg::reply(TmgReply::Slept, 0).expect("Error in a reply `TmgEvent::Slept`");
     }
-// 使用当前区块时间戳减去上次喂食的时间戳 self.fed_block，计算时间差并除以1000，然后乘以每区块增加的饥饿度 HUNGER_PER_BLOCK
+/// 使用当前区块时间戳减去上次喂食的时间戳 self.fed_block，计算时间差并除以1000，然后乘以每区块增加的饥饿度 HUNGER_PER_BLOCK
     fn calculate_hunger(&self) -> u64 {
         HUNGER_PER_BLOCK * ((exec::block_timestamp() - self.fed_block) / 1_000)
     }
@@ -100,7 +100,7 @@ impl Tamagotchi {
         fed == 0 && entertained == 0 && rested == 0
     }
 }
-
+// 用于接收信息的句柄，判断如何对接受的信息进行处理，类似router
 #[no_mangle]
 extern fn handle() {
     // 从接收到的消息中加载并解码成 TmgAction 类型。
@@ -108,6 +108,7 @@ extern fn handle() {
     // 获取或初始化 Tamagotchi 实例
     let tmg = unsafe { TAMAGOTCHI.get_or_insert(Default::default()) };
     match action {
+        // 通过reply方法进行响应
         TmgAction::Name => {
             msg::reply(TmgReply::Name(tmg.name.clone()), 0)
                 .expect("Error in a reply `TmgEvent::Name`");
@@ -143,7 +144,7 @@ extern fn init() {
         TAMAGOTCHI = Some(tmg);
     }
 }
-
+// 状态函数
 #[no_mangle]
 extern fn state() {
     let tmg = unsafe { TAMAGOTCHI.take().expect("Unexpected error in taking state") };
