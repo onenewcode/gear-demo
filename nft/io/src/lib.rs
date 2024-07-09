@@ -1,12 +1,15 @@
 #![no_std]
 use gmeta::{In, InOut, Metadata};
+// prelude::*：预加载了许多常用的 Rust 标准库功能
+// ActorId：用于表示和管理合约参与者的唯一标识符。
+// 它类似于一个地址，标识谁在与合约进行交互。
 use gstd::{prelude::*, ActorId};
 
 pub type TokenId = u128;
 pub const ZERO_ID: ActorId = ActorId::zero();
 
 pub struct NftMetadata;
-
+// 设置NFT数据类型
 impl Metadata for NftMetadata {
     type Init = In<InitNft>;
     type Handle = InOut<NftAction, NftEvent>;

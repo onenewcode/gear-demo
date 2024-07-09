@@ -6,17 +6,27 @@ use gstd::{
     prelude::*,
     ActorId,
 };
+// nft_io 模块中的所有内容。
+// 使用这种方式可以方便地使用模块中定义的各种类型和函数。
 use nft_io::*;
 
 #[derive(Debug, Default)]
 pub struct Nft {
+    // 个字段将存储每个 TokenId 对应的所有者（ActorId）
     pub owner_by_id: HashMap<TokenId, ActorId>,
+    // 存储每个 TokenId 的授权信息。
     pub token_approvals: HashMap<TokenId, ActorId>,
+    // 字段将存储每个 TokenId 对应的元数据（TokenMetadata）
     pub token_metadata_by_id: HashMap<TokenId, TokenMetadata>,
+    // 存储每个所有者（ActorId）拥有的所有 TokenId 集合。
     pub tokens_for_owner: HashMap<ActorId, HashSet<TokenId>>,
+    // 存储当前的 NFT 标识符
     pub token_id: TokenId,
+    // 存储合约的所有者
     pub owner: ActorId,
+    // 存储NFT的集合信息
     pub collection: Collection,
+    // 存储合约的配置
     pub config: Config,
 }
 
@@ -57,6 +67,7 @@ impl Nft {
             token_metadata,
         }
     }
+    /// 销毁 nft 通过TokenId
     /// Burn nft by `TokenId`
     fn burn(&mut self, token_id: TokenId) -> NftEvent {
         let owner = *self
@@ -65,6 +76,7 @@ impl Nft {
             .expect("NonFungibleToken: token does not exist");
 
         self.check_owner(&owner);
+        // 从owner_by_id移除，拥有者
         self.owner_by_id.remove(&token_id);
         self.token_metadata_by_id.remove(&token_id);
 
@@ -80,6 +92,7 @@ impl Nft {
     }
     ///  Transfer token from `token_id` to address `to`
     fn transfer(&mut self, to: &ActorId, token_id: TokenId) -> NftEvent {
+        // 判断是否存在
         let owner = *self
             .owner_by_id
             .get(&token_id)
@@ -161,7 +174,7 @@ impl Nft {
             },
         )
     }
-
+    /// 用当前合同数据检查配置
     /// Checking the configuration with current contract data
     fn check_config(&self) {
         if let Some(max_mint_count) = self.config.max_mint_count {
@@ -179,12 +192,14 @@ impl Nft {
             panic!("NonFungibleToken: zero address");
         }
     }
+    /// 通过msg，检查是否拥有nft的权限，无权限直接panic
     /// Checks that `msg::source()` is the owner of the token with indicated `token_id`
     fn check_owner(&self, owner: &ActorId) {
         if owner != &msg::source() {
             panic!("NonFungibleToken: access denied");
         }
     }
+    /// 检查是否允许' msg::source() '管理指定' token_id '的令牌。
     /// Checks that `msg::source()` is allowed to manage the token with indicated `token_id`
     fn can_transfer(&self, token_id: TokenId, owner: &ActorId) {
         if let Some(approved_accounts) = self.token_approvals.get(&token_id) {
