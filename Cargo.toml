@@ -3,7 +3,9 @@ resolver = "2"
 members = [
     "tamagotchi",
     "tamagotchi/state",
-    "nft"
+    "nft",
+    "nft-marketplace",
+    "nft-marketplace/state",
 ]
 
 [workspace.package]
