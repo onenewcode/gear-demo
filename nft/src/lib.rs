@@ -31,7 +31,7 @@ pub struct Nft {
 }
 
 static mut NFT: Option<Nft> = None;
-
+//  定义一个外部不安全函数
 #[no_mangle]
 unsafe extern fn init() {
     let init: InitNft = msg::load().expect("Unable to decode InitNft");
@@ -46,11 +46,14 @@ unsafe extern fn init() {
 }
 
 impl Nft {
+    /// 一个是所有者的地址 to，类型为 &ActorId；另一个是NFT元信息
     /// Mint a new nft using `TokenMetadata`
     fn mint(&mut self, to: &ActorId, token_metadata: TokenMetadata) -> NftEvent {
         self.check_config();
         self.check_zero_address(to);
+        // 分配当前token给目标地址
         self.owner_by_id.insert(self.token_id, *to);
+        // 尝试获取目标是否持有token
         self.tokens_for_owner
             .entry(*to)
             .and_modify(|tokens| {
@@ -118,6 +121,7 @@ impl Nft {
                 self.tokens_for_owner.remove(&owner);
             }
         }
+        // 移除授权列表
         // remove approvals if any
         self.token_approvals.remove(&token_id);
 
@@ -129,6 +133,7 @@ impl Nft {
     }
     ///  Approve token from `token_id` to address `to`
     fn approve(&mut self, to: &ActorId, token_id: TokenId) -> NftEvent {
+        // 通过令牌获取ower标识
         let owner = self
             .owner_by_id
             .get(&token_id)
@@ -192,7 +197,7 @@ impl Nft {
             panic!("NonFungibleToken: zero address");
         }
     }
-    /// 通过msg，检查是否拥有nft的权限，无权限直接panic
+    /// 检查当前消息发送者是否为 NFT 的所有者
     /// Checks that `msg::source()` is the owner of the token with indicated `token_id`
     fn check_owner(&self, owner: &ActorId) {
         if owner != &msg::source() {
@@ -209,6 +214,7 @@ impl Nft {
         }
         self.check_owner(owner);
     }
+    /// 用于检查 NFT 是否已经被授权
     /// Check the existence of a approve
     fn check_approve(&self, token_id: &TokenId) {
         if self.token_approvals.contains_key(token_id) {
