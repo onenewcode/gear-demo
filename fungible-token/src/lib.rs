@@ -4,28 +4,32 @@ use fungible_token_io::*;
 use gstd::{
     collections::HashMap, errors::Result as GstdResult, msg, prelude::*, ActorId, MessageId,
 };
-
+// 通常某些特殊的操作或状态并不由指定用户或合约实现。
 #[cfg(test)]
 mod tests;
 
 const ZERO_ID: ActorId = ActorId::new([0u8; 32]);
-
+// #[derive(Debug)]，
+// 使得 FungibleToken 结构体可以使用 {:?} 格式化标记进行调试打印。
 #[derive(Debug, Clone, Default)]
 struct FungibleToken {
     /// Name of the token.
     name: String,
     /// Symbol of the token.
     symbol: String,
+    /// 代币总数量
     /// Total supply of the token.
     total_supply: u128,
+    /// 余额
     /// Map to hold balances of token holders.
     balances: HashMap<ActorId, u128>,
+    /// 映射以保存令牌持有者的许可信息。
     /// Map to hold allowance information of token holders.
     allowances: HashMap<ActorId, HashMap<ActorId, u128>>,
     /// Token's decimals.
     pub decimals: u8,
 }
-
+// 管理代币状态的全局变量
 static mut FUNGIBLE_TOKEN: Option<FungibleToken> = None;
 
 impl FungibleToken {
